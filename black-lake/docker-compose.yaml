@@ -1,17 +1,25 @@
-version: '3.8'
+version: "3.8"
 services:
+  frontend:
+    build:
+      context: ../durmitor-frontend
+    ports:
+      - 3000:3000
+    networks:
+      - durmitor
   admin:
     build:
       context: .
       dockerfile: Dockerfile
-    command: 'php artisan serve --host=0.0.0.0'
+    command: "php artisan serve --host=0.0.0.0"
     volumes:
       - .:/app
     ports:
       - 8000:8000
     depends_on:
       - admin_db
-
+    networks:
+      - durmitor
   admin_db:
     image: mysql:5.7.22
     environment:
@@ -23,3 +31,8 @@ services:
       - ./storage/dbdata:/var/lib/mysql
     ports:
       - 33063:3306
+    networks:
+      - durmitor
+networks:
+  durmitor:
+    driver: bridge
